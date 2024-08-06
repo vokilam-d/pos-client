@@ -3,8 +3,9 @@
 
   @if (!isNewProduct()) {
     <button
-      class="btn btn--danger"
+      class="mat-btn mat-btn--danger mat-btn--toolbar"
       page-toolbar-item
+      mat-raised-button
       [disabled]="!product() || isLoading()"
       (click)="deleteProduct()"
     >
@@ -13,8 +14,9 @@
   }
 
   <button
-    class="btn"
+    class="mat-btn mat-btn--success mat-btn--toolbar"
     page-toolbar-item
+    mat-raised-button
     [disabled]="!product() || isLoading()"
     (click)="save()"
   >
@@ -24,62 +26,12 @@
 
   @if (form) {
     <div class="form" [formGroup]="form">
-      <div class="form__row">
-        <div class="form__label">
-          Назва
-        </div>
-
-        <div class="form__input-container">
-          <input
-            class="form__input"
-            formControlName="name"
-            type="text"
-          >
-        </div>
-      </div>
-
-      <div class="form__row">
-        <div class="form__label">
-          Ціна
-        </div>
-
-        <div class="form__input-container">
-          <input
-            class="form__input"
-            formControlName="price"
-            type="number"
-            min="0"
-          >
-        </div>
-      </div>
-
-      <div class="form__row">
-        <div class="form__label">
-          Категорія
-        </div>
-
-        <div class="form__input-container">
-          <mat-form-field class="option__input">
-            <mat-label>Категорія</mat-label>
-
-            <mat-select formControlName="categoryId">
-              @for (category of categoryService.cachedCategories(); track category.id) {
-                <mat-option [value]="category.id">{{ category.name }}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-        </div>
-      </div>
-
-      <div class="form__row">
-        <div class="form__label">
-          Фото
-        </div>
-
-        <div class="form__input-container">
+      <div class="form__rows-group form__cols">
+        <div class="form__col">
           @if (form.controls.photoUrl.getRawValue()) {
             <app-photo-asset
               [photoUrl]="form.controls.photoUrl.getRawValue()"
+              (deleted)="form.controls.photoUrl.setValue(null)"
             ></app-photo-asset>
           } @else {
             <app-photo-uploader
@@ -88,87 +40,293 @@
             ></app-photo-uploader>
           }
         </div>
+
+        <div class="form__col">
+          <div class="form__row">
+            <mat-form-field class="form__wide-input">
+              <mat-label>Назва</mat-label>
+
+              <input
+                formControlName="name"
+                matInput
+                type="text"
+              >
+            </mat-form-field>
+          </div>
+
+          <div class="form__row">
+            <mat-form-field class="form__wide-input">
+              <mat-label>Категорія</mat-label>
+
+              <mat-select formControlName="categoryId">
+                @for (category of categoryService.cachedCategories(); track category.id) {
+                  <mat-option [value]="category.id">{{ category.name }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
       </div>
 
-      <div class="form__row form__row--no-align">
-        <div class="form__label form__label--options">
-          Опції
+      <div class="section-delimiter">
+        @if (form.controls.options.length) {
+          Базові інгредієнти
+        } @else {
+          Інгредієнти
+        }
+      </div>
+
+      <ng-container *ngTemplateOutlet="ingredientsTmpl; context: { $implicit: form.controls.ingredients }"></ng-container>
+
+      <div class="section-delimiter">
+        Опції
+      </div>
+
+      <div class="form__rows-group" formArrayName="options">
+        @for (optionForm of form.controls.options.controls; let optionIndex = $index; track optionIndex) {
+          <div class="option" [formGroupName]="optionIndex">
+            <div class="option__name-container">
+              <mat-form-field class="option__name">
+                <mat-label>Назва</mat-label>
+
+                <input
+                  formControlName="name"
+                  matInput
+                  type="text"
+                >
+              </mat-form-field>
+
+              <button
+                class="form__delete material-symbols-rounded"
+                (click)="deleteOption(optionIndex)"
+              >
+                delete
+              </button>
+            </div>
+
+            <div class="option__values" formArrayName="values">
+              @for (optionValueForm of optionForm.controls.values.controls; track $index) {
+                <div
+                  class="option__value"
+                  [class.option__value--selected]="isOptionValueSelected(optionForm.controls.id.getRawValue(), optionValueForm.controls.id.getRawValue())"
+                  [formGroupName]="$index"
+                >
+                  @if (optionValueForm.controls.isEditing.getRawValue()) {
+                    <input
+                      class="option__value-name"
+                      formControlName="name"
+                      type="text"
+                    >
+
+                    <button
+                      class="option__value-icon material-symbols-rounded"
+                      (click)="optionValueForm.controls.isEditing.setValue(false)"
+                    >
+                      check
+                    </button>
+                  } @else {
+                    <div
+                      class="option__name"
+                      (click)="selectOptionValue(optionForm.controls.id.getRawValue(), optionValueForm.controls.id.getRawValue())"
+                    >
+                      {{ optionValueForm.controls.name.getRawValue() }}
+                    </div>
+
+                    @if (isOptionValueSelected(optionForm.controls.id.getRawValue(), optionValueForm.controls.id.getRawValue())) {
+                      <button
+                        class="option__value-icon material-symbols-rounded"
+                        (click)="optionValueForm.controls.isEditing.setValue(true)"
+                      >
+                        edit
+                      </button>
+
+                      <button
+                        class="option__value-icon material-symbols-rounded"
+                        (click)="deleteOptionValue(optionIndex, $index)"
+                      >
+                        delete
+                      </button>
+                    }
+                  }
+                </div>
+              }
+
+              @if (optionForm.controls.isAddingValue.getRawValue()) {
+                <input
+                  matInput
+                  type="text"
+                  #newOptionValue
+                >
+
+                <button
+                  (click)="addNewOptionValue(optionIndex, newOptionValue)"
+                >
+                  <span class="material-symbols-rounded">check</span>
+                </button>
+              } @else {
+                <button
+                  class="option__value"
+                  (click)="optionForm.controls.isAddingValue.setValue(true)"
+                >
+                  <span class="material-symbols-rounded">add</span>
+                </button>
+              }
+
+            </div>
+          </div>
+        }
+
+        <div class="form__row">
+          <button
+            mat-raised-button
+            class="mat-btn mat-btn--default mat-btn--sharp"
+            (click)="addNewOption()"
+          >
+            <mat-icon>add</mat-icon>Додати нову опцію
+          </button>
+        </div>
+      </div>
+
+      <ng-container *ngIf="getSelectedVariantForm() as variantForm">
+        <div class="variant" [formGroup]="variantForm">
+          @if (form.controls.options.length) {
+            <div class="section-delimiter">
+              Інгредієнти
+            </div>
+
+            <ng-container
+              *ngTemplateOutlet="ingredientsTmpl; context: { $implicit: variantForm.controls.ingredients }"
+            ></ng-container>
+          }
+
+          @for (selectedOption of variantForm.controls.selectedOptions.getRawValue(); track selectedOption) {
+            Опція: {{ getOption(selectedOption.optionId)?.name }}<br>
+            Значення: {{ getOptionValue(selectedOption.optionId, selectedOption.optionValueId)?.name }}<br>
+          }
+
+          <div class="section-delimiter">
+            Ціна
+          </div>
+
+          <div class="form__rows-group">
+            <mat-form-field class="variant__field">
+              <mat-label>Собівартість</mat-label>
+
+              <input
+                formControlName="basePrice"
+                matInput
+                type="number"
+                min="0"
+              >
+              <span matTextSuffix>&nbsp;₴</span>
+            </mat-form-field>
+
+            +
+
+            <mat-form-field class="variant__field">
+              <mat-label>Націнка</mat-label>
+
+              <input
+                formControlName="markupPercent"
+                matInput
+                type="number"
+              >
+              <span matTextSuffix>&nbsp;%</span>
+            </mat-form-field>
+
+            =
+
+            <mat-form-field class="variant__field">
+              <mat-label>Ціна</mat-label>
+
+              <input
+                formControlName="price"
+                matInput
+                type="number"
+                min="0"
+              >
+              <span matTextSuffix>&nbsp;₴</span>
+            </mat-form-field>
+          </div>
         </div>
 
-        <div class="form__input-container">
-          @for (optionForm of optionsFormArray.controls; track optionForm) {
-            <div class="option" [formGroup]="optionForm">
-              <mat-form-field class="option__input">
-                <mat-label>Опція</mat-label>
+      </ng-container>
 
-                <mat-select formControlName="optionId">
-                  @for (option of getProductOptionsForDropdown($index); track option.id) {
-                    <mat-option [value]="option.id">{{ option.name }}</mat-option>
+
+      <ng-template #ingredientsTmpl let-formArray>
+        <div
+          class="form__rows-group"
+          formArrayName="ingredients"
+        >
+          @for (ingredientForm of ifa(formArray).controls; track $index) {
+            <div class="form__row ingredient" [formGroupName]="$index">
+              <mat-form-field class="ingredient__name">
+                <mat-label>Назва</mat-label>
+
+                <mat-select formControlName="ingredientId">
+                  @for (ingredient of getIngredientsForDropdown(ifa(formArray)); track ingredient.id) {
+                    <mat-option [value]="ingredient.id">{{ ingredient.name }}</mat-option>
                   }
                 </mat-select>
               </mat-form-field>
 
-              <button
-                class="option__delete material-symbols-rounded"
-                (click)="deleteSelectedOption($index)"
-              >
-                delete
-              </button>
+              <mat-form-field class="ingredient__qty">
+                <mat-label>Кількість</mat-label>
 
-              @for (optionValueForm of optionForm.controls.optionValues.controls; track optionValueForm) {
-                <div class="option__value" [formGroup]="optionValueForm">
-                  <mat-checkbox
-                    class="option__input"
-                    formControlName="isEnabled"
-                  >
-                    Включити?
-                  </mat-checkbox>
+                <input
+                  formControlName="qty"
+                  matInput
+                  type="number"
+                  min="0"
+                >
+                <span matTextSuffix>&nbsp;{{ getIngredientDto(ingredientForm)?.unit | unit }}</span>
+              </mat-form-field>
 
-                  <mat-form-field class="option__input">
-                    <mat-label>Назва</mat-label>
+              <mat-form-field class="ingredient__price">
 
-                    <input
-                      matInput
-                      type="text"
-                      formControlName="name"
-                    >
-                  </mat-form-field>
+                <mat-label>Вартість</mat-label>
 
-                  <mat-checkbox
-                    class="option__input"
-                    formControlName="isPriceDiffOverridden"
-                  >
-                    Перезадати ціну?
-                  </mat-checkbox>
+                <input
+                  [value]="getIngredientDto(ingredientForm)?.price || 0"
+                  matInput
+                  disabled
+                >
+                <span matTextSuffix>&nbsp;₴/{{ getIngredientDto(ingredientForm)?.unit | unit }}</span>
+              </mat-form-field>
 
-                  <mat-form-field class="option__input">
-                    <mat-label>Різниця ціни</mat-label>
+              <mat-form-field class="ingredient__price">
+                <mat-label>Сума</mat-label>
 
-                    <span matTextPrefix>{{ optionValueForm.controls.priceDiff.getRawValue() >= 0 ? '+' : '&nbsp;&nbsp;' }}</span>
-                    <input
-                      matInput
-                      type="number"
-                      formControlName="priceDiff"
-                    >
-                    <span matTextSuffix>&nbsp;₴</span>
-                  </mat-form-field>
-                </div>
-              }
+                <input
+                  [value]="calcIngredientTotalPrice(ingredientForm, getIngredientDto(ingredientForm))"
+                  matInput
+                  disabled
+                >
+                <span matTextSuffix>&nbsp;₴</span>
+              </mat-form-field>
+
+              <div class="ingredient__field">
+                <button
+                  class="form__delete material-symbols-rounded"
+                  (click)="deleteControlFromArray(ifa(formArray), $index)"
+                >
+                  delete
+                </button>
+              </div>
             </div>
           }
 
-          <div class="form__row form__row--no-border-bottom">
+          <div class="form__row">
             <button
-              class="add-new"
-              (click)="addSelectedOptionForm()"
+              mat-raised-button
+              class="mat-btn mat-btn--default mat-btn--sharp"
+              (click)="addNewIngredient(ifa(formArray))"
             >
-              <span class="add-new__icon material-symbols-rounded">add</span>
-
-              Додати нову опцію
+              <mat-icon>add</mat-icon> Додати новий інгредієнт
             </button>
           </div>
         </div>
-      </div>
+      </ng-template>
     </div>
   }
 </app-page-content>
@@ -176,3 +334,4 @@
 @if (isLoading()) {
   <app-preloader></app-preloader>
 }
+

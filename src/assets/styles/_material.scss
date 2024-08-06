@@ -37,7 +37,7 @@ $posh-client-theme: mat.define-theme((
     tertiary: mat.$blue-palette,
   ),
   density: (
-    scale: 0,
+    scale: -1,
   )
 ));
 

@@ -50,7 +50,8 @@ export class AdminOrderListComponent implements OnInit {
 
   isLoading = signal<boolean>(false);
   orders = signal<OrderDto[]>([]);
-  displayedColumns: (keyof OrderDto)[] = ['id', 'createdAtIso', 'orderItems', 'paymentType', 'totalCost'];
+  // displayedColumns: (keyof OrderDto)[] = ['id', 'createdAtIso', 'orderItems', 'paymentType', 'totalCost'];
+  displayedColumns: (keyof OrderDto)[] = ['id', 'createdAtIso', 'orderItems', 'paymentType'];
 
   ngOnInit() {
     this.fetchOrders();
@@ -68,7 +69,8 @@ export class AdminOrderListComponent implements OnInit {
   }
 
   getOrderItemNames(orderItems: OrderItemDto[]): string {
-    return orderItems.map(orderItem => orderItem.productName).join(', ');
+    // return orderItems.map(orderItem => orderItem.productName).join(', ');
+    return null;
   }
 
   protected readonly paymentTypeEnum = PaymentType;

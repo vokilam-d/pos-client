@@ -2,8 +2,8 @@ import { Routes } from '@angular/router';
 import { PosComponent } from './pages/pos/pos.component';
 import { AdminCategoryListComponent } from './pages/admin-category-list/admin-category-list.component';
 import { AdminCategoryComponent } from './pages/admin-category/admin-category.component';
-import { AdminProductOptionListComponent } from './pages/admin-product-option-list/admin-product-option-list.component';
-import { AdminProductOptionComponent } from './pages/admin-product-option/admin-product-option.component';
+// import { AdminProductOptionListComponent } from './pages/admin-product-option-list/admin-product-option-list.component';
+// import { AdminProductOptionComponent } from './pages/admin-product-option/admin-product-option.component';
 import { AdminProductListComponent } from './pages/admin-product-list/admin-product-list.component';
 import { AdminProductComponent } from './pages/admin-product/admin-product.component';
 import { AdminOrderListComponent } from './pages/admin-order-list/admin-order-list.component';
@@ -64,15 +64,15 @@ export const routes: Routes = [
   {
     path: 'product-option',
     children: [
-      {
-        path: '',
-        component: AdminProductOptionListComponent,
-        pathMatch: 'full',
-      },
-      {
-        path: ':productOptionId',
-        component: AdminProductOptionComponent,
-      },
+      // {
+      //   path: '',
+      //   component: AdminProductOptionListComponent,
+      //   pathMatch: 'full',
+      // },
+      // {
+      //   path: ':productOptionId',
+      //   component: AdminProductOptionComponent,
+      // },
     ]
   },
   {

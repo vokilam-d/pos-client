@@ -1,8 +1,8 @@
 import { PaymentType } from '../enums/payment-type.enum';
-import { OrderItemDto } from './order-item.dto';
+import { CreateOrderItemDto } from './create-order-item.dto';
 
 export class CreateOrUpdateOrderDto {
-  orderItems: OrderItemDto[];
-  paymentType: PaymentType;
-  createdAtIso: string;
+  orderItems: CreateOrderItemDto[] = [];
+  paymentType: PaymentType = null;
+  createdAtIso: string = null;
 }

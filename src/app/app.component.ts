@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { MatIconRegistry } from '@angular/material/icon';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +12,9 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 })
 export class AppComponent {
 
+  private readonly iconRegistry = inject(MatIconRegistry);
+
   constructor() {
+    this.iconRegistry.setDefaultFontSetClass('material-symbols-rounded');
   }
 }

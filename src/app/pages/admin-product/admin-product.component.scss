@@ -1,39 +1,10 @@
 .form {
-  margin: 0 auto;
-
-  &__label {
-    &--options {
-      margin-top: 8px;
-    }
-  }
-}
-
-.values-container {
-  margin: 16px 0 0;
-
-  &__values {
-    margin: 16px 0 0 64px;
-  }
-}
-
-.option {
-  padding: 0 0 16px;
-  border-bottom: 1px solid #ccc;;
-
-  &__input {
-    margin: 0 0 0 16px;
-
-    &:first-child {
-      margin-left: 0;
-    }
+  &__rows-group {
+    padding: 0 24px;
   }
 
   &__delete {
-    position: relative;
-    top: 8px;
-    margin: 0 0 0 16px;
     transition: color 0.2s ease;
-    font-weight: 300;
 
     &:hover {
       color: var(--error);
@@ -41,21 +12,32 @@
   }
 }
 
-.add-new {
+.section-delimiter {
+  margin: 16px 0;
+  padding: 16px 24px 0;
+  border-top: 1px solid #ccc;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.ingredient {
+  display: flex;
+  justify-content: space-between;
+
+  &__qty {
+    width: 100px;
+  }
+
+  &__price {
+    width: 130px;
+  }
+}
+
+.option__name {
+  margin: 0 8px 0 0;
+}
+
+.option__name-container {
   display: flex;
   align-items: center;
-  padding: 6px 12px;
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  transition: background 0.2s ease;
-
-  &:hover {
-    background: #f3f3f3;
-  }
-
-  &__icon {
-    margin: 0 6px 0 0;
-    font-weight: 300;
-  }
 }

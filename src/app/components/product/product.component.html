@@ -22,25 +22,25 @@
 
   @if (hasOptions()) {
     <div class="product__options">
-      @for (option of product().options; track option.optionId) {
-        <div class="product__option option">
-          <div class="option__name">
-            {{ productOptionService.getProductOptionName(option.optionId) }}
-          </div>
+<!--      @for (option of product().options; track option.optionId) {-->
+<!--        <div class="product__option option">-->
+<!--          <div class="option__name">-->
+<!--            {{ productOptionService.getProductOptionName(option.optionId) }}-->
+<!--          </div>-->
 
-          <div class="option__values">
-            @for (optionValue of option.optionValues; track optionValue.optionValueId) {
-              <div
-                class="option__value"
-                [class.option__value--selected]="isOptionValueSelected(option.optionId, optionValue.optionValueId)"
-                (click)="selectOptionValue(option.optionId, optionValue.optionValueId)"
-              >
-                {{ productOptionService.getProductOptionValueName(option.optionId, optionValue.optionValueId) }}
-              </div>
-            }
-          </div>
-        </div>
-      }
+<!--          <div class="option__values">-->
+<!--            @for (optionValue of option.optionValues; track optionValue.optionValueId) {-->
+<!--              <div-->
+<!--                class="option__value"-->
+<!--                [class.option__value&#45;&#45;selected]="isOptionValueSelected(option.optionId, optionValue.optionValueId)"-->
+<!--                (click)="selectOptionValue(option.optionId, optionValue.optionValueId)"-->
+<!--              >-->
+<!--                {{ productOptionService.getProductOptionValueName(option.optionId, optionValue.optionValueId) }}-->
+<!--              </div>-->
+<!--            }-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      }-->
     </div>
 
     <button

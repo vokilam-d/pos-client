@@ -4,8 +4,8 @@ import { CartService } from '../../services/cart.service';
 import { ImgComponent } from '../img/img.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ProductDto } from '../../dtos/product.dto';
-import { ProductOptionService } from '../../services/product-option.service';
-import { SelectedProductOptionDto } from '../../dtos/selected-product-option.dto';
+// import { ProductOptionService } from '../../services/product-option.service';
+// import { SelectedProductOptionDto } from '../../dtos/selected-product-option.dto';
 import { OrderItemSelectedOptionDto } from '../../dtos/order-item-selected-option.dto';
 
 @Component({
@@ -25,7 +25,7 @@ export class ProductComponent {
   selectedOptionsMap: Map<string, string> = new Map();
 
   private readonly cartService = inject(CartService);
-  readonly productOptionService = inject(ProductOptionService);
+  // readonly productOptionService = inject(ProductOptionService);
 
   constructor() {
     this.cartService.buy$
@@ -67,42 +67,44 @@ export class ProductComponent {
   }
 
   calcPrice(): number {
-    return this.product().options.reduce(
-      (acc, option) => {
-        return this.selectedOptionsMap.has(option.optionId)
-          ? acc + this.getPriceOfSelectedOptionValue(option)
-          : acc;
-      },
-      this.product().price,
-    );
+    return 0;
+    // return this.product().options.reduce(
+    //   (acc, option) => {
+    //     return this.selectedOptionsMap.has(option.optionId)
+    //       ? acc + this.getPriceOfSelectedOptionValue(option)
+    //       : acc;
+    //   },
+    //   this.product().price,
+    // );
   }
 
   private buildOrderItemSelectedOptions(): OrderItemSelectedOptionDto[] {
-    return this.product().options
-      .filter(option => this.selectedOptionsMap.has(option.optionId))
-      .map(option => {
-        const selectedValueId = this.selectedOptionsMap.get(option.optionId);
-
-        const optionDto = this.productOptionService.getProductOption(option.optionId);
-        const optionValueDto = optionDto.values.find(valueDto => valueDto.id === selectedValueId);
-
-        return {
-          optionId: optionDto.id,
-          optionName: optionDto.name,
-          optionValueId: optionValueDto.id,
-          optionValueName: optionValueDto.name,
-          priceDiff: this.getPriceOfSelectedOptionValue(option),
-        };
-      });
+    // return this.product().options
+    //   .filter(option => this.selectedOptionsMap.has(option.optionId))
+    //   .map(option => {
+    //     const selectedValueId = this.selectedOptionsMap.get(option.optionId);
+    //
+    //     const optionDto = this.productOptionService.getProductOption(option.optionId);
+    //     const optionValueDto = optionDto.values.find(valueDto => valueDto.id === selectedValueId);
+    //
+    //     return {
+    //       optionId: optionDto.id,
+    //       optionName: optionDto.name,
+    //       optionValueId: optionValueDto.id,
+    //       optionValueName: optionValueDto.name,
+    //       priceDiff: this.getPriceOfSelectedOptionValue(option),
+    //     };
+    //   });
+    return [];
   }
 
-  private getPriceOfSelectedOptionValue(selectedOption: SelectedProductOptionDto): number {
-    const selectedValueId = this.selectedOptionsMap.get(selectedOption.optionId);
-    const selectedValue = selectedOption.optionValues.find(value => value.optionValueId === selectedValueId);
-
-    const optionDto = this.productOptionService.getProductOption(selectedOption.optionId);
-    const optionValueDto = optionDto.values.find(valueDto => valueDto.id === selectedValueId);
-
-    return selectedValue.isPriceDiffOverridden ? selectedValue.priceDiff : optionValueDto.priceDiff;
-  }
+  // private getPriceOfSelectedOptionValue(selectedOption: SelectedProductOptionDto): number {
+  //   const selectedValueId = this.selectedOptionsMap.get(selectedOption.optionId);
+  //   const selectedValue = selectedOption.optionValues.find(value => value.optionValueId === selectedValueId);
+  //
+  //   const optionDto = this.productOptionService.getProductOption(selectedOption.optionId);
+  //   const optionValueDto = optionDto.values.find(valueDto => valueDto.id === selectedValueId);
+  //
+  //   return selectedValue.isPriceDiffOverridden ? selectedValue.priceDiff : optionValueDto.priceDiff;
+  // }
 }

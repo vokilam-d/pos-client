@@ -1,13 +1,26 @@
 .form {
+  &__cols {
+    display: flex;
+  }
+
+  &__col {
+    flex-grow: 2;
+    flex-shrink: 0;
+  }
+
   &__row {
-    margin: 16px 0 0;
-    padding: 0 0 16px;
+    margin: 8px 0 0;
+    padding: 0 0 8px;
     display: flex;
     align-items: center;
     border-bottom: 1px solid #ccc;
 
     &:first-child {
       margin-top: 0;
+    }
+
+    &:last-child {
+      border-bottom: none;
     }
 
     &--no-align {
@@ -36,5 +49,13 @@
     background: #fff;
     border: 1px solid #ccc;
     border-radius: 4px;
+  }
+
+  &__wide-input {
+    &#{&} {
+      min-width: 400px;
+      width: 30%;
+      max-width: 100%;
+    }
   }
 }

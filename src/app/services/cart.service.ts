@@ -45,13 +45,13 @@ export class CartService {
       if (existingCartItem) {
         existingCartItem.qty += 1;
       } else {
-        cart.items.push({
-          productId: product.id,
-          productName: product.name,
-          qty: 1,
-          price: product.price as number,
-          selectedOptions: selectedOptions,
-        });
+        // cart.items.push({
+        //   productId: product.id,
+        //   productName: product.name,
+        //   qty: 1,
+        //   price: product.price as number,
+        //   selectedOptions: selectedOptions,
+        // });
       }
 
       return carts;
@@ -105,7 +105,8 @@ export class CartService {
   }
 
   calcItemPrice(cartItem: OrderItemDto): number {
-    const optionsPriceDiff = cartItem.selectedOptions.reduce((acc, option) => acc + option.priceDiff, 0);
+    // const optionsPriceDiff = cartItem.selectedOptions.reduce((acc, option) => acc + option.priceDiff, 0);
+    const optionsPriceDiff = 0;
 
     return cartItem.price + optionsPriceDiff;
   }

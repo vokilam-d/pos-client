@@ -7,6 +7,8 @@
 @import "assets/styles/table";
 
 :root {
+  --text-color: #333;
+
   --accent: #00bc00; // #0078d4 - blue
   --accent-active: lch(from var(--accent) calc(l - 10) c h);
   --accent-disabled: #ccc;
@@ -34,7 +36,7 @@ html {
   font-variation-settings:
     "wdth" 100,
     "YTLC" 500;
-  color: #333;
+  color: var(--text-color);
 }
 
 button,
@@ -61,4 +63,35 @@ a {
 
 .material-symbols-rounded {
   color: inherit;
+}
+
+.toolbar-btn {
+}
+
+.mat-btn {
+  &#{&}#{&}#{&} {
+    transition: background-color 0.2s ease;
+
+    &--success {
+      --mdc-protected-button-label-text-color: #fff;
+      --mdc-protected-button-container-color: var(--accent);
+    }
+    &--danger {
+      --mdc-protected-button-label-text-color: #fff;
+      --mdc-protected-button-container-color: var(--error);
+    }
+    &--default {
+      --mdc-protected-button-label-text-color: var(--text-color);
+    }
+
+    &--toolbar {
+      --mdc-protected-button-label-text-size: 18px;
+      --mdc-protected-button-label-text-weight: 600;
+    }
+
+    &--sharp {
+      --mdc-protected-button-container-shape: 4px;
+      --mdc-text-button-container-shape: 4px;
+    }
+  }
 }

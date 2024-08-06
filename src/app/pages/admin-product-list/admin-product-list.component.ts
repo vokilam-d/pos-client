@@ -19,8 +19,8 @@ import {
   MatRowDef,
   MatTable,
 } from '@angular/material/table';
-import { SelectedProductOptionDto } from '../../dtos/selected-product-option.dto';
-import { ProductOptionService } from '../../services/product-option.service';
+// import { SelectedProductOptionDto } from '../../dtos/selected-product-option.dto';
+// import { ProductOptionService } from '../../services/product-option.service';
 import { CategoryService } from '../../services/category.service';
 import { buildPhotoUrl } from '../../utils/build-photo-url.util';
 
@@ -50,12 +50,13 @@ export class AdminProductListComponent implements OnInit {
 
   private readonly productService = inject(ProductService);
   readonly categoryService = inject(CategoryService);
-  private readonly productOptionService = inject(ProductOptionService);
+  // private readonly productOptionService = inject(ProductOptionService);
   private readonly toastr = inject(ToastrService);
 
   isLoading = signal<boolean>(false);
   products = signal<ProductDto[]>([]);
-  displayedColumns: (keyof ProductDto)[] = ['photoUrl', 'name', 'price', 'categoryId', 'options'];
+  // displayedColumns: (keyof ProductDto)[] = ['photoUrl', 'name', 'price', 'categoryId', 'options'];
+  displayedColumns: (keyof ProductDto)[] = ['photoUrl', 'name', 'categoryId', 'options'];
 
   ngOnInit() {
     this.fetchProducts();
@@ -72,8 +73,10 @@ export class AdminProductListComponent implements OnInit {
       );
   }
 
-  getOptionsNames(options: SelectedProductOptionDto[]): string {
-    return options?.map(option => this.productOptionService.getProductOptionName(option.optionId)).join(', ');
+  // getOptionsNames(options: SelectedProductOptionDto[]): string {
+  getOptionsNames(options): string {
+    // return options?.map(option => this.productOptionService.getProductOptionName(option.optionId)).join(', ');
+    return null;
   }
 
   protected readonly buildPhotoUrl = buildPhotoUrl;

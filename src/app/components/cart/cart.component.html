@@ -4,7 +4,7 @@
     @for (cartItem of cartService.cartItems(); track cartItem.productId; let index = $index) {
       <div class="cart__item cart-item">
         <div class="cart-item__name">
-          {{ cartItem.productName }}
+<!--          {{ cartItem.productName }}-->
         </div>
 
         @for (option of cartItem.selectedOptions; track option.optionId) {

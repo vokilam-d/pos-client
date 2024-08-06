@@ -1,10 +1,14 @@
-import { SelectedProductOptionDto } from './selected-product-option.dto';
+import { SelectedIngredientDto } from './selected-ingredient.dto';
+import { OptionVariantDto } from './option-variant.dto';
+import { OptionDto } from './option.dto';
 
 export class CreateOrUpdateProductDto {
   name: string = '';
-  price: number = 0;
   categoryId: string = null;
+  ingredients: SelectedIngredientDto[] = [];
+  options: OptionDto[] = [];
+  variants: OptionVariantDto[] = [new OptionVariantDto()];
+  purchasePrice: number = 0;
   photoUrl: string = null;
-  options: SelectedProductOptionDto[] = [];
   sortOrder: number = 0;
 }
