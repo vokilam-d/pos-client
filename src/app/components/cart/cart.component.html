@@ -4,24 +4,24 @@
     @for (cartItem of cartService.cartItems(); track cartItem.productId; let index = $index) {
       <div class="cart__item cart-item">
         <div class="cart-item__name">
-          {{ cartItem.productName }}
+          {{ cartItem.runtimeState.name }}
         </div>
 
         @for (option of cartItem.selectedOptions; track option.optionId) {
           <div class="cart-item__option">
             <div class="cart-item__option-name">
-              {{ option.optionName }}
+              {{ option.runtimeState.optionName }}
             </div>
 
             <div class="cart-item__option-value-name">
-              {{ option.optionValueName }}
+              {{ option.runtimeState.optionValueName }}
             </div>
           </div>
         }
 
         <div class="cart-item__price-counter">
           <div class="cart-item__price">
-            {{ cartService.calcItemPrice(cartItem) }} ₴
+            {{ cartItem.runtimeState.price }} ₴
           </div>
 
           <div class="cart-item__counter">

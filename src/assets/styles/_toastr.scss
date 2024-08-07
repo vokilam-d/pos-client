@@ -7,7 +7,9 @@
   border-style: solid;
   color: #333;
   transition: box-shadow 0.2s ease;
-  animation: flyInFromBottom 0.2s ease-in-out;
+  animation: flyInFromBottom 0.5s ease-in-out;
+  overflow: auto;
+  max-height: 90vh;
 
   &:hover {
     box-shadow: 0 0 12px rgb(0 0 0 / 55%);

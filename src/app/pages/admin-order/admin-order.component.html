@@ -1,14 +1,16 @@
 <app-page-content backUrl="..">
   <div page-title>Замовлення №{{ order()?.id }}</div>
 
-  <button
-    class="btn btn--danger"
-    page-toolbar-item
-    [disabled]="!order() || isLoading()"
-    (click)="deleteOrder()"
-  >
-    Видалити
-  </button>
+  <ng-container page-toolbar>
+    <button
+      class="mat-btn mat-btn--danger mat-btn--toolbar"
+      mat-raised-button
+      [disabled]="!order() || isLoading()"
+      (click)="deleteOrder()"
+    >
+      Видалити
+    </button>
+  </ng-container>
 
 
   @if (order()) {
@@ -36,12 +38,12 @@
               </div>
               <div class="order-item__name-container">
                 <div class="order-item__name">
-                  {{ item.productName }}
+                  {{ item.name }}
                 </div>
 
                 @for (option of item.selectedOptions; track option.optionId) {
                   <div class="order-item__option">
-                    {{ option.optionName }}: {{ option.optionValueName }}, {{ option.priceDiff >= 0 ? '+' : '' }}{{ option.priceDiff }} ₴
+                    {{ option.optionName }}: {{ option.optionValueName }}
                   </div>
                 }
               </div>
@@ -76,7 +78,7 @@
         </div>
 
         <div class="form__input-container">
-          {{ order().totalCost }} ₴
+          {{ order().totalPrice }} ₴
         </div>
       </div>
     </div>

@@ -2,12 +2,15 @@ import { Routes } from '@angular/router';
 import { PosComponent } from './pages/pos/pos.component';
 import { AdminCategoryListComponent } from './pages/admin-category-list/admin-category-list.component';
 import { AdminCategoryComponent } from './pages/admin-category/admin-category.component';
-import { AdminProductOptionListComponent } from './pages/admin-product-option-list/admin-product-option-list.component';
-import { AdminProductOptionComponent } from './pages/admin-product-option/admin-product-option.component';
+import { AdminIngredientListComponent } from './pages/admin-ingredient-list/admin-ingredient-list.component';
+import { AdminIngredientComponent } from './pages/admin-ingredient/admin-ingredient.component';
 import { AdminProductListComponent } from './pages/admin-product-list/admin-product-list.component';
 import { AdminProductComponent } from './pages/admin-product/admin-product.component';
 import { AdminOrderListComponent } from './pages/admin-order-list/admin-order-list.component';
 import { AdminOrderComponent } from './pages/admin-order/admin-order.component';
+import { PAGE_ACTION_ADD } from './constants';
+import { RouteDataKey } from './enums/route-data-key.enum';
+import { RouteParamKey } from './enums/route-param-key.enum';
 
 export const routes: Routes = [
   {
@@ -42,7 +45,17 @@ export const routes: Routes = [
         pathMatch: 'full',
       },
       {
-        path: ':categoryId',
+        path: 'add',
+        component: AdminCategoryComponent,
+        data: { [RouteDataKey.PageAction]: PAGE_ACTION_ADD },
+      },
+      {
+        path: `add/:${RouteParamKey.NewItemBasedOn}`,
+        component: AdminCategoryComponent,
+        data: { [RouteDataKey.PageAction]: PAGE_ACTION_ADD },
+      },
+      {
+        path: `:${RouteParamKey.NewItem}`,
         component: AdminCategoryComponent,
       },
     ]
@@ -56,22 +69,42 @@ export const routes: Routes = [
         pathMatch: 'full',
       },
       {
-        path: ':productId',
+        path: 'add',
+        component: AdminProductComponent,
+        data: { [RouteDataKey.PageAction]: PAGE_ACTION_ADD },
+      },
+      {
+        path: `add/:${RouteParamKey.NewItemBasedOn}`,
+        component: AdminProductComponent,
+        data: { [RouteDataKey.PageAction]: PAGE_ACTION_ADD },
+      },
+      {
+        path: `:${RouteParamKey.NewItem}`,
         component: AdminProductComponent,
       },
     ]
   },
   {
-    path: 'product-option',
+    path: 'ingredient',
     children: [
       {
         path: '',
-        component: AdminProductOptionListComponent,
+        component: AdminIngredientListComponent,
         pathMatch: 'full',
       },
       {
-        path: ':productOptionId',
-        component: AdminProductOptionComponent,
+        path: 'add',
+        component: AdminIngredientComponent,
+        data: { [RouteDataKey.PageAction]: PAGE_ACTION_ADD },
+      },
+      {
+        path: `add/:${RouteParamKey.NewItemBasedOn}`,
+        component: AdminIngredientComponent,
+        data: { [RouteDataKey.PageAction]: PAGE_ACTION_ADD },
+      },
+      {
+        path: `:${RouteParamKey.NewItem}`,
+        component: AdminIngredientComponent,
       },
     ]
   },

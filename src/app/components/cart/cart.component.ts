@@ -49,8 +49,8 @@ export class CartComponent {
         finalize(() => this.isLoading.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(
-        response => {
+      .subscribe({
+        next: response => {
           if (response) {
             this.toastr.success(`Замовлення успішно створене`);
           } else {
@@ -61,7 +61,7 @@ export class CartComponent {
             calcComponentInstance.dialogRef.close();
           }
         },
-        error => this.toastr.error(getHttpErrorMessage(error), `Не вдалося створити замовлення`),
-      );
+        error: error => this.toastr.error(getHttpErrorMessage(error), `Не вдалося створити замовлення`),
+      });
   }
 }

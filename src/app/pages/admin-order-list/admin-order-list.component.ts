@@ -13,7 +13,11 @@ import {
   MatColumnDef,
   MatHeaderCell,
   MatHeaderCellDef,
-  MatHeaderRow, MatHeaderRowDef, MatNoDataRow, MatRow, MatRowDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatNoDataRow,
+  MatRow,
+  MatRowDef,
   MatTable,
 } from '@angular/material/table';
 import { OrderItemDto } from '../../dtos/order-item.dto';
@@ -50,11 +54,19 @@ export class AdminOrderListComponent implements OnInit {
 
   isLoading = signal<boolean>(false);
   orders = signal<OrderDto[]>([]);
-  displayedColumns: (keyof OrderDto)[] = ['id', 'createdAtIso', 'orderItems', 'paymentType', 'totalCost'];
+  displayedColumns: (keyof OrderDto)[] = ['id', 'createdAtIso', 'orderItems', 'paymentType', 'totalPrice', 'totalProfit'];
 
   ngOnInit() {
     this.fetchOrders();
   }
+
+  getOrderItemNames(orderItems: OrderItemDto[]): string {
+    return orderItems.map(orderItem => orderItem.name).join(', ');
+  }
+  /**
+   * Workaround for type-checking, see: https://stackoverflow.com/a/61682343/7499769
+   */
+  o(order: OrderDto) { return order; }
 
   private fetchOrders() {
     this.isLoading.set(true);
@@ -65,10 +77,6 @@ export class AdminOrderListComponent implements OnInit {
         response => this.orders.set(response),
         error => this.toastr.error(getHttpErrorMessage(error), `Не вдалося отримати список замовлень`),
       );
-  }
-
-  getOrderItemNames(orderItems: OrderItemDto[]): string {
-    return orderItems.map(orderItem => orderItem.productName).join(', ');
   }
 
   protected readonly paymentTypeEnum = PaymentType;

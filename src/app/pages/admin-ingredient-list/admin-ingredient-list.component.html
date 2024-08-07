@@ -1,0 +1,49 @@
+<app-page-content>
+  <ng-container page-title>Інгредієнти</ng-container>
+
+  <ng-container page-toolbar>
+    <a
+      class="mat-btn mat-btn--success mat-btn--toolbar"
+      mat-raised-button
+      routerLink="add"
+    >
+      Додати новий інгредієнт
+    </a>
+  </ng-container>
+
+  <table mat-table [dataSource]="ingredients()" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Назва </th>
+      <td mat-cell *matCellDef="let ingredient"> {{ ingredient.name }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="price">
+      <th mat-header-cell *matHeaderCellDef> Ціна </th>
+      <td mat-cell *matCellDef="let ingredient"> {{ ingredient.price }} ₴ </td>
+    </ng-container>
+
+    <ng-container matColumnDef="qty">
+      <th mat-header-cell *matHeaderCellDef> Кількість в наявності </th>
+      <td mat-cell *matCellDef="let ingredient"> {{ ingredient.qty }} {{ ingredient.unit | unit }} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      class="table__row table__row--clickable"
+      mat-row
+      *matRowDef="let row; columns: displayedColumns;"
+      [routerLink]="row.id"
+    ></tr>
+
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="10">
+        @if (isLoading()) {
+          <app-preloader [isFixed]="false"></app-preloader>
+        } @else {
+          Немає інгредієнтів
+        }
+      </td>
+    </tr>
+  </table>
+</app-page-content>

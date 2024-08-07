@@ -7,6 +7,8 @@
 @import "assets/styles/table";
 
 :root {
+  --text-color: #111;
+
   --accent: #00bc00; // #0078d4 - blue
   --accent-active: lch(from var(--accent) calc(l - 10) c h);
   --accent-disabled: #ccc;
@@ -34,7 +36,7 @@ html {
   font-variation-settings:
     "wdth" 100,
     "YTLC" 500;
-  color: #333;
+  color: var(--text-color);
 }
 
 button,
@@ -56,9 +58,5 @@ button {
 
 a {
   text-decoration: none;
-  color: inherit;
-}
-
-.material-symbols-rounded {
   color: inherit;
 }

@@ -1,60 +1,55 @@
 <app-page-content backUrl="..">
-  <div page-title>{{ isNewCategory() ? 'Нова категорія' : category()?.name }}</div>
+  <ng-container page-title>{{ isNewCategory ? 'Нова категорія' : category()?.name }}</ng-container>
 
-  @if (!isNewCategory()) {
+  <ng-container page-toolbar>
+    @if (!isNewCategory) {
+      <button
+        class="mat-btn mat-btn--danger mat-btn--toolbar"
+        mat-raised-button
+        [disabled]="!category() || isLoading()"
+        (click)="deleteCategory()"
+      >
+        Видалити
+      </button>
+    }
+
     <button
-      class="btn btn--danger"
-      page-toolbar-item
+      class="mat-btn mat-btn--success mat-btn--toolbar"
+      mat-raised-button
       [disabled]="!category() || isLoading()"
-      (click)="deleteCategory()"
+      (click)="save()"
     >
-      Видалити
+      Зберегти
     </button>
-  }
 
-  <button
-    class="btn"
-    page-toolbar-item
-    [disabled]="!category() || isLoading()"
-    (click)="save()"
-  >
-    Зберегти
-  </button>
+  </ng-container>
 
 
   @if (form) {
     <div class="form" [formGroup]="form">
       <div class="form__row">
-        <div class="form__label">
-          Назва
-        </div>
+        <mat-form-field class="form__wide-input">
+          <mat-label>Назва</mat-label>
 
-        <div class="form__input-container">
           <input
-            class="form__input"
             formControlName="name"
+            matInput
             type="text"
           >
-        </div>
+        </mat-form-field>
       </div>
 
       <div class="form__row">
-        <div class="form__label">
-          Фото
-        </div>
-
-        <div class="form__input-container">
-          @if (form.controls.photoUrl.getRawValue()) {
-            <app-photo-asset
-              [photoUrl]="form.controls.photoUrl.getRawValue()"
-            ></app-photo-asset>
-          } @else {
-            <app-photo-uploader
-              [uploadUrl]="photoUploadUrl"
-              (uploaded)="onPhotoUpload($event)"
-            ></app-photo-uploader>
-          }
-        </div>
+        @if (form.controls.photoUrl.getRawValue()) {
+          <app-photo-asset
+            [photoUrl]="form.controls.photoUrl.getRawValue()"
+          ></app-photo-asset>
+        } @else {
+          <app-photo-uploader
+            [uploadUrl]="photoUploadUrl"
+            (uploaded)="onPhotoUpload($event)"
+          ></app-photo-uploader>
+        }
       </div>
     </div>
   }

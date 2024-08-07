@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DatePipe } from '@angular/common';
 import { PaymentType } from '../../enums/payment-type.enum';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-admin-order',
@@ -18,6 +19,7 @@ import { PaymentType } from '../../enums/payment-type.enum';
     PageContentComponent,
     PreloaderComponent,
     DatePipe,
+    MatButton,
   ],
   templateUrl: './admin-order.component.html',
   styleUrl: './admin-order.component.scss'

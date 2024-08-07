@@ -29,10 +29,10 @@ export class ConnectionService {
           error: () => this._isOnline$.next(false),
         }),
         catchError(() => of(null)),
-        finalize(() => setTimeout(
-          () => this.checkConnectionStatus(5000).subscribe(),
-          CHECK_CONNECTION_STATUS_INTERVAL_MS,
-        )),
+        // finalize(() => setTimeout(
+        //   () => this.checkConnectionStatus(5000).subscribe(),
+        //   CHECK_CONNECTION_STATUS_INTERVAL_MS,
+        // )),
       );
   }
 

@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { CategoryService } from '../../services/category.service';
 import { PageContentComponent } from '../../components/page-content/page-content.component';
 import { CategoryDto } from '../../dtos/category.dto';
@@ -14,6 +14,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PhotoUploaderComponent } from '../../components/photo-uploader/photo-uploader.component';
 import { environment } from '../../../environments/environment';
 import { PhotoAssetComponent } from '../../components/photo-asset/photo-asset.component';
+import { MatButton } from '@angular/material/button';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { RouteDataKey } from '../../enums/route-data-key.enum';
+import { PAGE_ACTION_ADD } from '../../constants';
+import { RouteParamKey } from '../../enums/route-param-key.enum';
 
 type CategoryForm = Record<keyof CreateOrUpdateCategoryDto, FormControl>;
 
@@ -27,17 +33,23 @@ type CategoryForm = Record<keyof CreateOrUpdateCategoryDto, FormControl>;
     PreloaderComponent,
     PhotoUploaderComponent,
     PhotoAssetComponent,
+    MatButton,
+    MatFormField,
+    MatInput,
+    MatLabel,
   ],
   templateUrl: './admin-category.component.html',
   styleUrl: './admin-category.component.scss'
 })
 export class AdminCategoryComponent {
   categoryId = signal<string | null>(null);
-  isNewCategory = computed<boolean>(() => this.categoryId() === 'add');
-
-  form: FormGroup<CategoryForm>;
   category = signal<CategoryDto | CreateOrUpdateCategoryDto>(null);
   isLoading = signal<boolean>(false);
+
+  form: FormGroup<CategoryForm>;
+
+  readonly isNewCategory: boolean = false;
+  readonly isNewCategoryBasedOnId: string = null;
 
   readonly photoUploadUrl = `${environment.apiUrl}/categories/photo`;
 
@@ -46,11 +58,22 @@ export class AdminCategoryComponent {
   private readonly toastr = inject(ToastrService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor() {
-    this.route.params
-      .pipe(takeUntilDestroyed())
-      .subscribe(params => params['categoryId'] ? this.init(params['categoryId']) : null );
+    this.isNewCategory = this.route.snapshot.data[RouteDataKey.PageAction] === PAGE_ACTION_ADD;
+    this.isNewCategoryBasedOnId = this.route.snapshot.params[RouteParamKey.NewItemBasedOn];
+
+    if (this.isNewCategory) {
+      this.init();
+    } else {
+      this.route.params
+        .pipe(takeUntilDestroyed(), )
+        .subscribe(params => {
+          this.categoryId.set(params[RouteParamKey.NewItem]);
+          this.init();
+        });
+    }
   }
 
   save() {
@@ -59,43 +82,46 @@ export class AdminCategoryComponent {
       ...this.form.getRawValue(),
     };
 
-    const request = this.isNewCategory()
+    const request = this.isNewCategory
       ? this.categoryService.create(dto)
       : this.categoryService.update(this.categoryId(), dto);
 
     this.isLoading.set(true);
     request
       .pipe(finalize(() => this.isLoading.set(false)))
-      .subscribe(
-        response => {
-          if (this.isNewCategory()) {
-            this.router.navigate(['..', response.id], { relativeTo: this.route });
+      .subscribe({
+        next: response => {
+          if (this.isNewCategory) {
+            this.router.navigate(['..', response.id], { relativeTo: this.route }).then();
           } else {
             this.category.set(response);
           }
           this.toastr.success(`Успішно збережено`);
         },
-        error => this.toastr.error(getHttpErrorMessage(error), `Не вдалося зберегти категорію`),
-      );
+        error: error => this.toastr.error(getHttpErrorMessage(error), `Не вдалося зберегти категорію`),
+      });
   }
 
-  private init(categoryId: string) {
-    this.categoryId.set(categoryId);
+  private init() {
+    if (!this.isNewCategory || (this.isNewCategory && this.isNewCategoryBasedOnId)) {
+      const categoryId = (this.isNewCategory && this.isNewCategoryBasedOnId) || this.categoryId();
 
-    if (this.isNewCategory()) {
-      this.category.set(new CreateOrUpdateCategoryDto());
-      this.buildForm();
-    } else {
       this.isLoading.set(true);
-      this.categoryService.fetchCategoryById(this.categoryId())
-        .pipe(finalize(() => this.isLoading.set(false)))
-        .subscribe(
-          response => {
+      this.categoryService.fetchCategoryById(categoryId)
+        .pipe(
+          finalize(() => this.isLoading.set(false)),
+          takeUntilDestroyed(this.destroyRef),
+        )
+        .subscribe({
+          next: response => {
             this.category.set(response);
             this.buildForm();
           },
-          error => this.toastr.error(getHttpErrorMessage(error), `Не вдалося отримати категорію`),
-        );
+          error: error => this.toastr.error(getHttpErrorMessage(error), `Не вдалося отримати категорію`),
+        });
+    } else {
+      this.category.set(new CreateOrUpdateCategoryDto());
+      this.buildForm();
     }
   }
 
@@ -109,7 +135,7 @@ export class AdminCategoryComponent {
 
   deleteCategory() {
     if (
-      this.isNewCategory()
+      this.isNewCategory
       || !confirm(`Ви впевнені що хочете видалити категорію "${this.category().name}"?`)
     ) {
       return;
@@ -118,13 +144,13 @@ export class AdminCategoryComponent {
     this.isLoading.set(true);
     this.categoryService.deleteCategory(this.categoryId())
       .pipe(finalize(() => this.isLoading.set(false)))
-      .subscribe(
-        () => {
-          this.router.navigate(['..'], { relativeTo: this.route });
+      .subscribe({
+        next: () => {
+          this.router.navigate(['..'], { relativeTo: this.route }).then();
           this.toastr.success(`Успішно видалено`, undefined);
         },
-        error => this.toastr.error(getHttpErrorMessage(error), `Не вдалося видалити категорію`),
-      );
+        error: error => this.toastr.error(getHttpErrorMessage(error), `Не вдалося видалити категорію`),
+      });
   }
 
   onPhotoUpload(photoUrl: string): void {

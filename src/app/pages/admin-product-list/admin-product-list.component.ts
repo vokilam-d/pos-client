@@ -14,15 +14,15 @@ import {
   MatHeaderCell,
   MatHeaderCellDef,
   MatHeaderRow,
-  MatHeaderRowDef, MatNoDataRow,
+  MatHeaderRowDef,
+  MatNoDataRow,
   MatRow,
   MatRowDef,
   MatTable,
 } from '@angular/material/table';
-import { SelectedProductOptionDto } from '../../dtos/selected-product-option.dto';
-import { ProductOptionService } from '../../services/product-option.service';
 import { CategoryService } from '../../services/category.service';
 import { buildPhotoUrl } from '../../utils/build-photo-url.util';
+import { MatAnchor } from '@angular/material/button';
 
 @Component({
   selector: 'app-admin-product-list',
@@ -42,6 +42,7 @@ import { buildPhotoUrl } from '../../utils/build-photo-url.util';
     MatHeaderRowDef,
     MatRowDef,
     MatNoDataRow,
+    MatAnchor,
   ],
   templateUrl: './admin-product-list.component.html',
   styleUrl: './admin-product-list.component.scss'
@@ -50,12 +51,11 @@ export class AdminProductListComponent implements OnInit {
 
   private readonly productService = inject(ProductService);
   readonly categoryService = inject(CategoryService);
-  private readonly productOptionService = inject(ProductOptionService);
   private readonly toastr = inject(ToastrService);
 
   isLoading = signal<boolean>(false);
   products = signal<ProductDto[]>([]);
-  displayedColumns: (keyof ProductDto)[] = ['photoUrl', 'name', 'price', 'categoryId', 'options'];
+  displayedColumns: ((keyof ProductDto) | string)[] = ['photoUrl', 'name', 'price', 'categoryId', 'options'];
 
   ngOnInit() {
     this.fetchProducts();
@@ -66,15 +66,28 @@ export class AdminProductListComponent implements OnInit {
 
     this.productService.fetchProducts()
       .pipe(finalize(() => this.isLoading.set(false)))
-      .subscribe(
-        response => this.products.set(response),
-        error => this.toastr.error(getHttpErrorMessage(error), `Не вдалося отримати товари`),
-      );
+      .subscribe({
+        next: response => this.products.set(response),
+        error: error => this.toastr.error(getHttpErrorMessage(error), `Не вдалося отримати товари`),
+      });
   }
 
-  getOptionsNames(options: SelectedProductOptionDto[]): string {
-    return options?.map(option => this.productOptionService.getProductOptionName(option.optionId)).join(', ');
+  getPriceRange(productDto: ProductDto): string {
+    const prices = productDto.variants.map(variant => variant.price);
+    const min = Math.min(...prices);
+    const max = Math.max(...prices);
+
+    let range = `${min}`;
+    if (min !== max) {
+      range += `-${max}`;
+    }
+    return range;
   }
+
+  /**
+   * Workaround for type-checking, see: https://stackoverflow.com/a/61682343/7499769
+   */
+  p(product: ProductDto) { return product; }
 
   protected readonly buildPhotoUrl = buildPhotoUrl;
 }

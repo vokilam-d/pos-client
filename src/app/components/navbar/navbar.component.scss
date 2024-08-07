@@ -10,8 +10,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #999;
     padding: 12px;
+    font-size: 24px;
+    color: #999;
 
     &:not(&--active):hover {
       color: color-mix(in srgb, var(--accent) 50%, #999);
@@ -37,9 +38,17 @@
 
   &__no-wifi {
     margin: auto 0 0;
-    color: color-mix(in srgb, var(--error) 50%, #fff);
+    padding: 12px;
+    font-size: 24px;
     font-weight: 600;
     text-align: center;
+    color: color-mix(in srgb, var(--error) 50%, #fff);
     cursor: help;
+  }
+}
+
+::ng-deep {
+  .navbar-tooltip {
+    pointer-events: none;
   }
 }

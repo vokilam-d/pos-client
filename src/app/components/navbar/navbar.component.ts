@@ -20,12 +20,12 @@ export class NavbarComponent {
 
   readonly connectionService = inject(ConnectionService);
 
-  readonly navbarItems: { route: string; iconName: string }[] = [
-    { route: 'pos', iconName: 'home' },
-    { route: 'category', iconName: 'table_chart' },
-    { route: 'product', iconName: 'coffee' },
-    { route: 'product-option', iconName: 'tune' },
-    { route: 'order', iconName: 'order_approve' },
+  readonly navbarItems: { route: string; iconName: string; tooltip: string }[] = [
+    { route: 'pos', iconName: 'home', tooltip: 'Термінал' },
+    { route: 'category', iconName: 'table_chart', tooltip: 'Категорії' },
+    { route: 'product', iconName: 'coffee', tooltip: 'Товари' },
+    { route: 'ingredient', iconName: 'grocery', tooltip: 'Інгредієнти' },
+    { route: 'order', iconName: 'order_approve', tooltip: 'Замовлення' },
   ];
 
 }

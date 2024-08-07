@@ -10,6 +10,7 @@ import { getHttpErrorMessage } from '../../utils/get-http-error-message.util';
 import { ToastrService } from 'ngx-toastr';
 import { ReorderCategoryDto } from '../../dtos/reorder-categories.dto';
 import { buildPhotoUrl } from '../../utils/build-photo-url.util';
+import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'app-admin-category-list',
@@ -27,6 +28,7 @@ import { buildPhotoUrl } from '../../utils/build-photo-url.util';
 export class AdminCategoryListComponent implements OnInit {
 
   private readonly categoryService = inject(CategoryService);
+  private readonly productService = inject(ProductService);
   private readonly toastr = inject(ToastrService);
 
   isLoading = signal<boolean>(false);
@@ -79,4 +81,8 @@ export class AdminCategoryListComponent implements OnInit {
   }
 
   protected readonly buildPhotoUrl = buildPhotoUrl;
+
+  countProducts(category: CategoryDto) {
+    return this.productService.cachedProducts().filter(product => product.categoryId === category.id).length;
+  }
 }

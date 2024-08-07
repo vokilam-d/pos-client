@@ -1,23 +1,25 @@
 <app-page-content>
-  <div page-title>Товари</div>
+  <ng-container page-title>Товари</ng-container>
 
-  <a
-    class="btn"
-    page-toolbar-item
-    routerLink="add"
-  >
-    Додати новий товар
-  </a>
+  <ng-container page-toolbar>
+    <a
+      class="mat-btn mat-btn--success mat-btn--toolbar"
+      mat-raised-button
+      routerLink="add"
+    >
+      Додати новий товар
+    </a>
+  </ng-container>
 
   <table mat-table [dataSource]="products()" class="mat-elevation-z8">
 
     <ng-container matColumnDef="photoUrl">
       <th mat-header-cell *matHeaderCellDef> Фото </th>
       <td mat-cell *matCellDef="let product">
-        @if (product.photoUrl) {
+        @if (p(product).photoUrl) {
           <img
             class="table__cell-img"
-            [src]="buildPhotoUrl(product.photoUrl)"
+            [src]="buildPhotoUrl(p(product).photoUrl)"
             alt=""
           >
         }
@@ -26,22 +28,24 @@
 
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef> Назва </th>
-      <td mat-cell *matCellDef="let product"> {{ product.name }} </td>
+      <td mat-cell *matCellDef="let product"> {{ p(product).name }} </td>
     </ng-container>
 
     <ng-container matColumnDef="price">
       <th mat-header-cell *matHeaderCellDef> Ціна </th>
-      <td mat-cell *matCellDef="let product"> {{ product.price }}₴ </td>
+      <td mat-cell *matCellDef="let product"> {{ getPriceRange(p(product)) }}₴ </td>
     </ng-container>
 
     <ng-container matColumnDef="categoryId">
       <th mat-header-cell *matHeaderCellDef> Категорія </th>
-      <td mat-cell *matCellDef="let product"> {{ categoryService.getCategoryName(product.categoryId) }} </td>
+      <td mat-cell *matCellDef="let product"> {{ categoryService.getCategoryName(p(product).categoryId) }} </td>
     </ng-container>
 
     <ng-container matColumnDef="options">
       <th mat-header-cell *matHeaderCellDef> Опції </th>
-      <td mat-cell *matCellDef="let product"> {{ getOptionsNames(product.values) }} </td>
+      <td mat-cell *matCellDef="let product"> @for(option of p(product).options; track option.id) {
+        {{ option.name }}@if(!$last) {,}
+      } </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

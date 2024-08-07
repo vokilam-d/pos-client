@@ -4,6 +4,9 @@
       class="navbar__item"
       [routerLink]="item.route"
       routerLinkActive="navbar__item--active"
+      [matTooltip]="item.tooltip"
+      matTooltipPosition="after"
+      matTooltipClass="navbar-tooltip"
     >
       <span class="navbar__item-icon material-symbols-rounded">{{ item.iconName }}</span>
     </a>

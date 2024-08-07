@@ -20,6 +20,10 @@
         }
 
         {{ category.name }}
+
+        <span class="categories__products-count">
+          Товарів: {{ countProducts(category) }}
+        </span>
       </a>
     }
 
@@ -29,6 +33,10 @@
     >
       <span class="categories__photo material-symbols-rounded">add_box</span>
       Нова категорія
+
+      <span class="categories__products-count categories__products-count--hidden">
+        Товарів:
+      </span>
     </a>
   </div>
 </app-page-content>

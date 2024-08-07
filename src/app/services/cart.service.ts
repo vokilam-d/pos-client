@@ -3,11 +3,12 @@ import { ICart } from '../interfaces/cart.interface';
 import { PaymentType } from '../enums/payment-type.enum';
 import { ProductDto } from '../dtos/product.dto';
 import { OrderItemSelectedOptionDto } from '../dtos/order-item-selected-option.dto';
-import { OrderItemDto } from '../dtos/order-item.dto';
 import { OrderService } from './order.service';
 import { Observable, tap } from 'rxjs';
 import { CreateOrUpdateOrderDto } from '../dtos/create-or-update-order.dto';
 import { OrderDto } from '../dtos/order.dto';
+import { CreateOrderItemSelectedOptionDto } from '../dtos/create-order-item-selected-option.dto';
+import { CreateOrderItemDto } from '../dtos/create-order-item.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -33,7 +34,7 @@ export class CartService {
     effect(() => this.persistCarts(this._carts()));
   }
 
-  addToCart(product: ProductDto, selectedOptions: OrderItemSelectedOptionDto[] = []): void {
+  addToCart(product: ProductDto, selectedOptions: CreateOrderItemSelectedOptionDto[] = []): void {
     this._carts.update(carts => {
       carts = structuredClone(carts);
       const cart = carts[this.currentCartIndex()];
@@ -47,23 +48,15 @@ export class CartService {
       } else {
         cart.items.push({
           productId: product.id,
-          productName: product.name,
           qty: 1,
-          price: product.price as number,
           selectedOptions: selectedOptions,
+          runtimeState: {
+            name: product.name,
+            price: this.calcItemPrice(product, selectedOptions),
+          }
         });
       }
 
-      return carts;
-    });
-  }
-
-  removeFromCart(cartItemIndex: number): void {
-    this._carts.update(carts => {
-      carts = structuredClone(carts);
-      const cart = carts[this.currentCartIndex()];
-
-      cart.items.splice(cartItemIndex, 1);
       return carts;
     });
   }
@@ -104,14 +97,8 @@ export class CartService {
     this._carts.update(carts => structuredClone(carts));
   }
 
-  calcItemPrice(cartItem: OrderItemDto): number {
-    const optionsPriceDiff = cartItem.selectedOptions.reduce((acc, option) => acc + option.priceDiff, 0);
-
-    return cartItem.price + optionsPriceDiff;
-  }
-
-  calcItemCost(cartItem: OrderItemDto): number {
-    return this.calcItemPrice(cartItem) * cartItem.qty;
+  calcItemCost(cartItem: CreateOrderItemDto): number {
+    return cartItem.runtimeState.price * cartItem.qty;
   }
 
   setPaymentType(paymentType: PaymentType): void {
@@ -179,6 +166,14 @@ export class CartService {
     });
   }
 
+  calcItemPrice(product: ProductDto, selectedOptions: CreateOrderItemSelectedOptionDto[]): number {
+    const variant = product.variants.find(variant => {
+      return this.isSelectedOptionsSame(variant.selectedOptions, selectedOptions);
+    });
+
+    return variant.price;
+  }
+
   private persistCarts(carts: ICart[]): void {
     localStorage.setItem(this.persistedCartsKey, JSON.stringify(carts));
   }
@@ -189,8 +184,8 @@ export class CartService {
   }
 
   private isSelectedOptionsSame(
-    selectedOptions1: OrderItemSelectedOptionDto[],
-    selectedOptions2: OrderItemSelectedOptionDto[],
+    selectedOptions1: CreateOrderItemSelectedOptionDto[],
+    selectedOptions2: CreateOrderItemSelectedOptionDto[],
   ): boolean {
     if (selectedOptions1.length !== selectedOptions2.length) {
       return false;

@@ -5,26 +5,26 @@
 
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef> ID </th>
-      <td mat-cell *matCellDef="let order"> {{ order.id }} </td>
+      <td mat-cell *matCellDef="let order"> {{ o(order).id }} </td>
     </ng-container>
 
     <ng-container matColumnDef="createdAtIso">
       <th mat-header-cell *matHeaderCellDef> Дата </th>
       <td mat-cell *matCellDef="let order" class="order__date">
-        {{ order.createdAtIso | date:'dd.MM.YYYY' }}<br>
-        {{ order.createdAtIso | date:'HH:mm:ss' }}
+        {{ o(order).createdAtIso | date:'dd.MM.YYYY' }}<br>
+        {{ o(order).createdAtIso | date:'HH:mm:ss' }}
       </td>
     </ng-container>
 
     <ng-container matColumnDef="orderItems">
       <th mat-header-cell *matHeaderCellDef> Товари </th>
-      <td mat-cell *matCellDef="let order"> {{ getOrderItemNames(order.orderItems) }} </td>
+      <td mat-cell *matCellDef="let order"> {{ getOrderItemNames(o(order).orderItems) }} </td>
     </ng-container>
 
     <ng-container matColumnDef="paymentType">
       <th mat-header-cell *matHeaderCellDef> Оплата </th>
       <td mat-cell *matCellDef="let order">
-        @switch (order.paymentType) {
+        @switch (o(order).paymentType) {
           @case (paymentTypeEnum.Cash) {
             Готівка
           }
@@ -35,9 +35,14 @@
       </td>
     </ng-container>
 
-    <ng-container matColumnDef="totalCost">
+    <ng-container matColumnDef="totalPrice">
       <th mat-header-cell *matHeaderCellDef> Сума </th>
-      <td mat-cell *matCellDef="let order"> {{ order.totalCost }} ₴ </td>
+      <td mat-cell *matCellDef="let order"> {{ o(order).totalPrice }} ₴ </td>
+    </ng-container>
+
+    <ng-container matColumnDef="totalProfit">
+      <th mat-header-cell *matHeaderCellDef> Прибуток </th>
+      <td mat-cell *matCellDef="let order"> {{ o(order).totalPrice }} ₴ </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

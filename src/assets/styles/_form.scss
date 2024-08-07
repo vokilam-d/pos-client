@@ -1,33 +1,29 @@
 .form {
-  &__row {
-    margin: 16px 0 0;
-    padding: 0 0 16px;
+  &__cols {
     display: flex;
-    align-items: center;
+  }
+
+  &__col {
+    flex-grow: 2;
+    flex-shrink: 0;
+  }
+
+  &__row {
+    margin: 8px 0 0;
+    padding: 0 0 8px;
     border-bottom: 1px solid #ccc;
 
     &:first-child {
       margin-top: 0;
     }
 
-    &--no-align {
-      align-items: initial;
+    &:last-child {
+      border-bottom: none;
     }
 
     &--no-border-bottom {
       border-bottom: none;
     }
-  }
-
-  &__label {
-    flex-shrink: 0;
-    width: 20%;
-    margin: 8px 24px 0 0;
-    font-size: 18px;
-  }
-
-  &__input-container {
-    flex-grow: 2;
   }
 
   &__input {
@@ -36,5 +32,13 @@
     background: #fff;
     border: 1px solid #ccc;
     border-radius: 4px;
+  }
+
+  &__wide-input {
+    &#{&} {
+      min-width: 400px;
+      width: 30%;
+      max-width: 100%;
+    }
   }
 }

@@ -15,6 +15,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideToastr } from 'ngx-toastr';
 import { provideServiceWorker } from '@angular/service-worker';
 import { ConnectionService } from './services/connection.service';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 
 export function initializeApp(healthService: ConnectionService) {
   return () => healthService.checkConnectionStatus();
@@ -39,5 +40,6 @@ export const appConfig: ApplicationConfig = {
       multi: true,
       deps: [ConnectionService],
     },
+    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'} }
   ],
 };

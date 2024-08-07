@@ -1,0 +1,104 @@
+<app-page-content [backUrl]="getBackToListUrl()">
+  <ng-container page-title>{{ isNewIngredient ? 'Новий інгредієнт' : ingredient()?.name }}</ng-container>
+
+  <ng-container page-toolbar>
+    @if (!isNewIngredient) {
+      <button
+        class="mat-btn mat-btn--danger mat-btn--toolbar"
+        mat-raised-button
+        [disabled]="!ingredient() || isLoading()"
+        (click)="deleteIngredient()"
+      >
+        Видалити
+      </button>
+
+      <a
+        class="mat-btn mat-btn--toolbar"
+        mat-raised-button
+        [routerLink]="['..', 'add', ingredientId()]"
+      >
+        Дублювати
+      </a>
+    }
+
+    <button
+      class="mat-btn mat-btn--toolbar"
+      mat-raised-button
+      [disabled]="!ingredient() || isLoading()"
+      (click)="save()"
+    >
+      Зберегти
+    </button>
+
+    <button
+      class="mat-btn mat-btn--success mat-btn--toolbar"
+      mat-raised-button
+      [disabled]="!ingredient() || isLoading()"
+      (click)="save('close')"
+    >
+      Зберегти і закрити
+    </button>
+  </ng-container>
+
+
+  @if (form) {
+    <div class="ingredient form" [formGroup]="form">
+      <div class="form__row">
+        <mat-form-field class="form__wide-input">
+          <mat-label>Назва</mat-label>
+
+          <input
+            formControlName="name"
+            matInput
+            type="text"
+          >
+        </mat-form-field>
+      </div>
+
+      <div class="form__row">
+        <mat-form-field class="form__wide-input">
+          <mat-label>Одиниця виміру</mat-label>
+
+          <mat-select formControlName="unit">
+            @for (unit of units; track unit) {
+              <mat-option [value]="unit">{{ unit | unit }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="form__row">
+        <mat-form-field class="form__wide-input">
+          <mat-label>Ціна</mat-label>
+
+          <input
+            formControlName="price"
+            matInput
+            type="number"
+          >
+
+          <span matTextSuffix>&nbsp;₴/{{ form.controls.unit.getRawValue() | unit }}</span>
+        </mat-form-field>
+      </div>
+
+      <div class="form__row">
+        <mat-form-field class="form__wide-input">
+          <mat-label>Кількість в наявності</mat-label>
+
+          <input
+            formControlName="qty"
+            matInput
+            type="number"
+          >
+
+          <span matTextSuffix>&nbsp;{{ form.controls.unit.getRawValue() | unit }}</span>
+        </mat-form-field>
+      </div>
+    </div>
+  }
+</app-page-content>
+
+@if (isLoading()) {
+  <app-preloader></app-preloader>
+}
+

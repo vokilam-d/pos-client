@@ -1,12 +1,17 @@
 import { OrderItemSelectedOptionDto } from './order-item-selected-option.dto';
+import { OrderItemIngredientDto } from './order-item-ingredient.dto';
+import { CreateOrderItemDto } from './create-order-item.dto';
 
 
-export class OrderItemDto {
-  productId: string;
-  productName?: string;
-  photoUrl?: string;
-  qty: number;
-  price?: number;
-  cost?: number;
-  selectedOptions: OrderItemSelectedOptionDto[];
+export class OrderItemDto extends CreateOrderItemDto {
+  name: string;
+  photoUrl: string;
+  override selectedOptions: OrderItemSelectedOptionDto[];
+  ingredients: OrderItemIngredientDto[];
+  primeCost: number;
+  markupPercent: number;
+  price: number;
+  profit: number;
+  totalPrice: number;
+  totalProfit: number;
 }
